@@ -11,32 +11,166 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
 
+
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
+const renderTeam = teamMembers => {
+    fs.writeFile(outputPath, render(teamMembers), () => {});
+}
+const teamBuilder = () => {
 
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
-
-
-
-
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
+    const addTeam = () => {
+    inquirer
+    .prompt([
+        {
+            type: "list",
+            name: "employee",
+            message: "What is your team members position?",
+            choices: ["Intern","Engineer","Manager", "I'm Done"]
+        },
 
 
+    ]).then(function (data) {
 
+        if(data.employee === "Intern"){
+            addIntern();
+        };
+        if(data.employee === "Engineer"){
+            addEngineer();
+        };
+        if(data.employee === "Manager"){
+            addManager();
+        };
+        if(data.employee === "I'm Done"){
+            buildTeam();
+        }
+        })
+    
+    }
 
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
+    const addIntern = () => {
+        inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "name",
+                message: "What is the intern's name?",
+            },
+            {
+                type: "input",
+                name: "id",
+                message: "What is the intern's id?",
+            },
+            {
+                type: "input",
+                name: "email",
+                message: "What is the intern's email?",
+            },
+            {
+                type: "input",
+                name: "school",
+                message: "What is the intern's school?",
+            },
+        ]).then(({name, id, email, school}) => {
+            teamMembers.push(new Intern(name, id, email, school));
+                inquirer.prompt({
+                    type:"confirm",
+                    message:" Add another team member?",
+                    name: "nextMember"
+                }).then(({nextMember}) => {
+                if (nextMember) {
+                    addTeam();
+                } else {
+                    renderTeam(teamMembers);
+                }
+            })
+        })
+    }
+
+    const addEngineer = () =>{
+        inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "name",
+                message: "What is the engineer's name?",
+            },
+            {
+                type: "input",
+                name: "id",
+                message: "What is engineer's id?",
+            },
+            {
+                type: "input",
+                name: "email",
+                message: "What is engineer's email?",
+            },
+            {
+                type: "input",
+                name: "gitHub",
+                message: "What is engineer's gitHub Username?",
+            },
+        ]).then(({name, id, email, gitHub}) => {
+            teamMembers.push(new Engineer(name, id, email, gitHub));
+                inquirer.prompt({
+                    type:"confirm",
+                    message:" Add another team member?",
+                    name: "nextMember"
+                }).then(({nextMember}) => {
+                if (nextMember) {
+                    addTeam();
+                } else {
+                    renderTeam(teamMembers);
+                }
+            })
+        })
+    }
+
+    const addManager = () => {
+        inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "name",
+                message: "What is the manager's name?",
+            },
+            {
+                type: "input",
+                name: "id",
+                message: "What is the manager's id?",
+            },
+            {
+                type: "input",
+                name: "email",
+                message: "What is the manager's email?",
+            },
+            {
+                type: "input",
+                name: "officeNumber",
+                message: "What is the manager's Office Number?",
+            },
+        ]).then(({name, id, email, officeNumber}) => {
+            teamMembers.push(new Manager(name, id, email, officeNumber));
+                inquirer.prompt({
+                    type:"confirm",
+                    message:" Add another team member?",
+                    name: "nextMember"
+                }).then(({nextMember}) => {
+                if (nextMember) {
+                    addTeam();
+                } else {
+                    renderTeam(teamMembers);
+                }
+            })
+        })
+    }
+
+    const teamMembers = [];
+    addTeam();
+
+}
+
+console.log(" - Welcome to Employee Team Builder CLI! - ")
+console.log(" ")
+teamBuilder();
