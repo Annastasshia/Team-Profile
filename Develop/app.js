@@ -16,10 +16,21 @@ const render = require("./lib/htmlRenderer");
 // and to create objects for each team member (using the correct classes as blueprints!)
 
 const renderTeam = teamMembers => {
-    fs.writeFile(outputPath, render(teamMembers), () => {});
+    fs.writeFile(outputPath, render(teamMembers), (err) => {
+        if (err) return console.log(err);
+        console.log("___________________________________________")
+        console.log(" ")
+        console.log(" - Your file has been successfully written! - ")
+        console.log("___________________________________________")
+        console.log(" ")
+        
+    });
 }
+
+
 const teamBuilder = () => {
 
+    
     const addTeam = () => {
     inquirer
     .prompt([
@@ -166,11 +177,15 @@ const teamBuilder = () => {
         })
     }
 
+
     const teamMembers = [];
     addTeam();
 
 }
 
+console.log("___________________________________________")
+console.log(" ")
 console.log(" - Welcome to Employee Team Builder CLI! - ")
+console.log("___________________________________________")
 console.log(" ")
 teamBuilder();
